@@ -1,0 +1,39 @@
+# Blind Assistant v8 — Requirements
+# Install: pip install -r requirements.txt
+
+# ── Core Vision ───────────────────────────────
+opencv-python>=4.8.0
+ultralytics>=8.0.0
+torch>=2.0.0
+torchvision>=0.15.0
+
+# ── OCR ───────────────────────────────────────
+easyocr>=1.7.0
+
+# ── Depth (MiDaS) ─────────────────────────────
+timm>=0.9.0
+
+# ── Face + Emotion ────────────────────────────
+deepface>=0.0.79
+tf-keras>=2.15.0
+
+# ── Scene (BLIP fallback) ─────────────────────
+transformers>=4.35.0
+Pillow>=10.0.0
+
+# ── Gesture ───────────────────────────────────
+mediapipe>=0.10.0
+
+# ── Voice ─────────────────────────────────────
+openai-whisper>=20231117
+SpeechRecognition>=3.10.0
+pyaudio>=0.2.13
+
+# ── TTS ───────────────────────────────────────
+pyttsx3>=2.90
+
+# ── AI (Groq) ─────────────────────────────────
+requests>=2.31.0
+
+# ── Utilities ─────────────────────────────────
+numpy>=1.24.0
