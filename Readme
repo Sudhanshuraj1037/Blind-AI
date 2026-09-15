@@ -1,186 +1,41 @@
-# 🦯 Blind Assistant v8 — Complete Setup Guide
+# 🦯 Blind AI — Real-Time Assistive Vision System
 
-## What It Does
-Real-time AI assistant for visually impaired people:
-- **Announces ALL objects** — phone, chair, cup, person, car, etc.
-- **Warns of danger** — car/bus/stairs immediately
-- **Reads text** (OCR) — signs, labels, menus
-- **Recognizes faces** — known people announced by name
-- **Detects emotions** — happy, sad, angry
-- **Detects gestures** — handshake, wave, stop, pointing
-- **Detects currency** — Indian rupee notes (₹10–₹2000)
-- **Gives directions** — "move left", "go straight", "stop"
-- **Reads traffic lights** — red/green/yellow
-- **AI vision answers** — Groq AI answers any question about the scene
+> An AI-powered assistive vision system designed to help visually impaired users understand and interact with their surroundings through computer vision, voice interaction, scene understanding, and audio feedback.
+
+Blind AI combines multiple perception modules into a single real-time assistant. The system can detect objects, read text, recognize faces, understand gestures and emotions, identify currency, interpret traffic lights, provide navigation-related guidance, and answer questions about the surrounding scene.
 
 ---
 
-## Folder Structure
-```
-Blind - Copy/
-├── main.py                          ← Run this
-├── config.py                        ← All settings + API keys
-├── requirements.txt
-│
-├── modules/
-│   ├── fusion_engine.py             ← FIXED: announces all objects
-│   ├── face_recognizer.py           ← FIXED: no more terminal spam
-│   ├── groq_assistant.py            ← NEW: Groq AI (replaces Gemini)
-│   ├── path_planner.py              ← NEW: move left/right/straight
-│   ├── traffic_light.py             ← NEW: red/green/yellow detection
-│   ├── object_detector.py
-│   ├── navigator.py
-│   ├── ocr_reader.py
-│   ├── emotion_detector.py
-│   ├── gesture_detector.py
-│   ├── currency_detector.py
-│   ├── voice_listener.py
-│   ├── nav_state.py
-│   ├── gps_navigator.py
-│   └── llava_describer.py
-│
-├── utils/
-│   ├── camera.py
-│   └── speaker.py
-│
-├── data/
-│   └── known_faces/                 ← Add photos here (sudhanshu.jpg)
-│
-├── models/
-│   └── currency_yolo.pt             ← Put trained model here
-│
-└── training/
-    └── currency_detection_training.ipynb  ← Train currency model
-```
+## ✨ Key Capabilities
 
----
+### 👁️ Real-Time Object Detection
+Detects and identifies objects visible through the camera and provides spoken feedback.
 
-## Step 1 — Install Packages
+Examples include:
 
-```bash
-cd "Blind - Copy"
-pip install -r requirements.txt
-```
+- Laptop
+- Mobile phone
+- Bottle
+- Chair
+- Person
+- Vehicle
+- Other supported objects
 
----
+### ⚠️ Hazard & Obstacle Awareness
+The system prioritizes potentially dangerous objects and obstacles to provide timely audio alerts.
 
-## Step 2 — Get FREE Groq API Key
+### 📖 OCR — Text Recognition
+Reads visible text such as:
 
-Groq is **faster than Gemini** and has a **free tier**:
+- Signs
+- Labels
+- Menus
+- Printed information
 
-1. Go to **https://console.groq.com**
-2. Sign up (free, no credit card needed)
-3. Click **API Keys** → **Create API Key**
-4. Copy the key (starts with `gsk_...`)
-5. Open `config.py` and paste:
+### 👤 Face Recognition
+Recognizes configured known faces and announces their names.
 
-```python
-GROQ_API_KEY = "gsk_your_actual_key_here"
-```
+Known faces can be added through:
 
----
-
-## Step 3 — Add Known Faces
-
-Put photos of people in `data/known_faces/`:
-```
+```text
 data/known_faces/
-    sudhanshu.jpg     → announced as "Sudhanshu"
-    mom.jpg           → announced as "Mom"
-    john_doe.jpg      → announced as "John Doe"
-```
-**One clear face per photo. Good lighting.**
-
----
-
-## Step 4 — Train Currency Model (Google Colab)
-
-1. Open `training/currency_detection_training.ipynb` in Google Colab
-2. Upload your currency photos from `data/currency_photos/`
-3. Run all cells (takes ~15 minutes on free T4 GPU)
-4. Download `currency_yolo.pt`
-5. Put it in `models/currency_yolo.pt`
-
----
-
-## Step 5 — Run
-
-```bash
-python main.py
-```
-
----
-
-## Keyboard Controls
-
-| Key   | Action                        |
-|-------|-------------------------------|
-| Q     | Quit                          |
-| SPACE | Describe objects now          |
-| D     | Toggle debug overlay          |
-| S     | Save screenshot               |
-
----
-
-## Voice Commands
-
-Say **"assistant"** followed by:
-
-| Command            | What it does                      |
-|--------------------|-----------------------------------|
-| `look around`      | Describe all visible objects      |
-| `read text`        | Read any visible text             |
-| `who is that`      | Identify person in view           |
-| `describe scene`   | Full AI scene description         |
-| `detect emotion`   | Read facial expression            |
-| `check currency`   | Identify banknote denomination    |
-| `navigate`         | Give direction (left/right/stop)  |
-| `where am I`       | GPS location (if GPS connected)   |
-| `weather`          | Current weather                   |
-| `stop`             | Stop all announcements            |
-| `help`             | List all commands                 |
-
-**Without wake word:** "who is that", "navigate", "where am I"
-
-**Feedback (teaches the AI):**
-- "good" / "yes" → positive reward
-- "stop" / "quiet" → clears queue
-
----
-
-## What Gets Announced Automatically
-
-| What           | Interval | Priority |
-|----------------|----------|----------|
-| Danger (car/bus) | 5s     | Highest  |
-| Obstacle depth | 8s       | High     |
-| ALL objects    | 6s       | Medium ← **THIS WAS THE BUG FIX** |
-| Gesture        | 6s       | Medium   |
-| Face           | 15s      | Medium   |
-| Emotion        | 10s      | Medium   |
-| Currency       | 6s       | Medium   |
-
----
-
-## Troubleshooting
-
-**Speaker not speaking:**
-- Check Windows audio is not muted
-- Try: `pip install pyttsx3 --upgrade`
-- Check: `TTS_QUEUE_MAX = 3` in config.py (not 0)
-
-**Camera lag:**
-- Set `LOW_RAM_MODE = True` in config.py
-- Increase frame skip values in config.py
-
-**FaceRecognizer spam in terminal:**
-- Fixed in v8 — replace face_recognizer.py with the new version
-
-**Objects detected but not spoken:**
-- Fixed in v8 — replace fusion_engine.py with the new version
-- The old code only announced DANGER_CLASSES automatically
-
-**Groq not working:**
-- Check API key starts with `gsk_`
-- Check internet connection
-- Free tier: 30 requests/minute (more than enough)
