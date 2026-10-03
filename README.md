@@ -1,6 +1,6 @@
 <div align="center">
 
-# 👁️ Blind AI
+# 👁️ Blind AI Assistant
 
 ### Real-Time AI-Powered Assistive Vision System
 
